@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+  <project name="kiryl_filatau_ant" basedir="." default="dist">
+	<target name="init">
+		<echo>Running target init</echo>
+		<tstamp>
+                    <format property="current.date.and.time" pattern="MM-dd-yyyy_hh:mm"/>
+                </tstamp>
+		<property name="config" location="config"/>
+	        <property name="lib" location="lib"/>
+        	<property name="src" location="src"/>
+        	<property name="test" location="test"/>
+        	<property name="build" location="build"/>
+        	<property name="filejar" location="filejar"/>
+        	<property name="kftest" location="kftest"/>
+       	</target>
+	<target name="clean" depends="init">
+                <echo>Running target clean</echo>
+                <delete dir="${build}"/>
+                <delete dir="${filejar}"/>
+                <delete dir="${kftest}"/>
+        </target>
+
+	<target name="compile" depends="clean" >
+		<echo>Running target compile</echo>
+		<mkdir dir="${build}" />
+		<javac includeantruntime="no" srcdir="${src}" destdir="${build}" classpath="lib/commons-collections-3.2.1.jar"/>
+	</target>
+	<target name="jar" depends="compile" >
+		<echo>Running target jar</echo>
+		<jar jarfile="${filejar}/kf.jar" basedir="${build}"/>
+	</target>
+	<target name="test" depends="jar" >
+		<echo>Running target test</echo>
+		<mkdir dir="${kftest}" />
+		<javac includeantruntime="no" srcdir="${test}" destdir="${kftest}" classpath="lib/junit-4.11.jar"/>
+		<junit>
+			<test name="${kftest}/com/test/UnitTest"/>
+			<classpath path="lib/junit-4.11.jar"/>
+		</junit>
+	</target>
+	<target name="dist" depends="test">
+		<echo>Running target dist</echo>
+		<zip basedir="." destfile="${build}/${current.date.and.time}-kfarch.zip" includes="config/* filejar/kf.jar lib/*"/>
+	</target>
+</project>
