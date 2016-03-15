@@ -32,14 +32,24 @@
 	<target name="test" depends="jar" >
 		<echo>Running target test</echo>
 		<mkdir dir="${kftest}" />
-		<javac includeantruntime="no" srcdir="${test}" destdir="${kftest}" classpath="lib/junit-4.11.jar"/>
-		<junit>
-			<test name="${kftest}/com/test/UnitTest"/>
+		<javac includeAntRuntime="no" srcdir="${test}" destdir="${kftest}">
 			<classpath path="lib/junit-4.11.jar"/>
+			<classpath path="hamcrest-core-1.3.jar"/>
+		</javac>
+		<junit printsummary="yes">
+			<classpath>
+				<pathelement location="lib/"/>
+				<pathelement location="kftest/"/>
+				<pathelement path="lib/junit-4.11.jar"/>
+				<pathelement path="lib/hamcrest-core-1.3.jar"/>
+			</classpath>
+			<test name="com.test.UnitTest" outfile="result">
+                                <formatter type="xml"/>
+                        </test>
 		</junit>
 	</target>
 	<target name="dist" depends="test">
 		<echo>Running target dist</echo>
-		<zip basedir="." destfile="${build}/${current.date.and.time}-kfarch.zip" includes="config/* filejar/kf.jar lib/*"/>
+		<tar basedir="." destfile="${build}/${current.date.and.time}-kfarch.tar.gz" includes="config/* filejar/kf.jar lib/*"/>
 	</target>
 </project>
